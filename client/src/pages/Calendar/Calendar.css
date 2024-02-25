@@ -1,0 +1,37 @@
+#container {
+    background-color: #001933;
+    height: auto;
+    width: 100%;
+}
+
+.create-modal {
+    height: auto;
+    width: 100%;
+    font-size: x-large;
+}
+
+.days-grid {
+    position: relative;
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    display: grid;
+    /* grid-template-columns: repeat(7, 1fr);
+    grid-column-gap: var(--grid-gap);
+    grid-row-gap: var(--grid-gap); */
+    /* border: var(--grid-gap) solid var(--grid-background-color); */
+    /* background-color: var(--grid-background-color); */
+  }
+.day-grid-item-container {
+    background-color: var(--grid-foreground-color);
+}
+
+.days-header {
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.content {
+    box-sizing: content-box;
+    height: 8vw;
+}
