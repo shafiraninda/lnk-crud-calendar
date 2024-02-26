@@ -13,7 +13,8 @@ const moment = require('moment')
 function Calendar(){
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    let { loginTime_id, username, loginTime } = useSelector(state => state.user)
+    let data = JSON.parse(localStorage.getItem('authKey'))
+    let { loginTime_id, username, loginTime } = data
 
     const [isMonth, setIsMonth] = useState(true)
     const [isWeek, setIsWeek] = useState(false)
@@ -205,17 +206,17 @@ function Calendar(){
             <div className="justify-content-center align-items-center px-5 py-3" id="container">
                 <div className="d-flex align-content-right mx-1">
                     <h1 className="col text-start text-light mx-2">Big Calendar</h1>
-                    <Button className="col-2 mx-2 fs-5 px-3" onClick={handleCreate}>Create</Button>
+                    <Button className="col-2 mx-2 fs-5 px-3 btn-success" onClick={handleCreate}>Create</Button>
                 </div>
                 <div className="d-flex row align-items-center my-3 mx-1">
-                    <Button className="col mx-2 fs-5" onClick={handleTodayDate}>Today</Button>
-                    <Button className="col mx-2 fs-5" onClick={handleBack}>Back</Button>
-                    <Button className="col mx-2 fs-5" onClick={handleNext}>Next</Button>
+                    <Button className="col mx-2 fs-5 btn-warning" onClick={handleTodayDate}>Today</Button>
+                    <Button className="col mx-2 fs-5 btn-warning" onClick={handleBack}>Back</Button>
+                    <Button className="col mx-2 fs-5 btn-warning" onClick={handleNext}>Next</Button>
                     <h2 className="col-4 mx-2 text-light">{moment().month(currMonth).format('MMMM')} {currYear}</h2>
-                    <Button className="col mx-2 fs-5">Month</Button>
-                    <Button className="col mx-2 fs-5">Week</Button>
-                    <Button className="col mx-2 fs-5">Day</Button>
-                    <Button className="col mx-2 fs-5">Agenda</Button>
+                    <Button className="col mx-2 fs-5 btn-warning">Month</Button>
+                    <Button className="col mx-2 fs-5 btn-warning">Week</Button>
+                    <Button className="col mx-2 fs-5 btn-warning">Day</Button>
+                    <Button className="col mx-2 fs-5 btn-warning">Agenda</Button>
                 </div>
                 <Card className="q-40 m5 p-2 rounded-5">
                     <Card.Body>
@@ -236,10 +237,10 @@ function Calendar(){
                                     moment(day).get('month') !== currMonth ? ( 
                                     <div key={day} className="col p-4 bg-secondary-subtle">
                                         <h3 className="d-flex justify-content-end mt-0 text-end text-body-secondary">{moment(day).get('date')}</h3>
-                                        <div className="content text-wrap">
+                                        <div className="content text-wrap overflow-auto">
                                             <ul>
                                                 { listAgenda[((index)*7)+idx]?.map((agnd) => (
-                                                    <li key={agnd._id} className="fs-5 text-break">{agnd.email}</li>
+                                                    <li key={agnd._id} className="fs-6 text-break">{agnd.email}</li>
                                                 ))
                                                 }
                                             </ul>
@@ -248,10 +249,10 @@ function Calendar(){
                                     ): ( 
                                     <div key={day} className="col p-4">
                                         <h3 className="d-flex justify-content-end mt-0 text-end">{moment(day).get('date')}</h3>
-                                        <div className="content text-wrap">
+                                        <div className="content text-wrap overflow-auto">
                                             <ul>
                                                 { listAgenda[((index)*7)+idx]?.map((agnd) => (
-                                                    <li key={agnd._id} className="fs-5 text-break">{agnd.email}</li>
+                                                    <li key={agnd._id} className="fs-6 text-break">{agnd.email}</li>
                                                 ))
                                                 }
                                             </ul>
