@@ -1,6 +1,8 @@
 const SendEmail = require('../models/sendEmailModel');
+const { SendEmailTask } = require('../utils/autoSendEmail');
 const errorHandler = require('../utils/errorHandler');
 const response = require('../utils/helper')
+const moment = require('moment')
 
 async function createSendEmail(req, res, next) {
     try {
@@ -12,6 +14,11 @@ async function createSendEmail(req, res, next) {
         })
 
         await newSendEmail.save()
+
+        if(moment(date).diff(moment(), 'day') === 0){
+            SendEmailTask(email)
+            await SendEmail.findByIdAndUpdate(newSendEmail._id, { isSent: true })
+        }
 
         if(newSendEmail){
             return res.status(200).json(response.successWithData('Success', newSendEmail))

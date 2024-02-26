@@ -3,7 +3,11 @@ const mongoose = require("mongoose");
 const express = require("express");
 const app =  express();
 const cors = require("cors");
+const cron = require('node-cron');
+const moment = require('moment')
 const routes = require("./routes/index");
+const sendEmail = require("./models/sendEmailModel");
+const { SendEmailTask } = require("./utils/autoSendEmail");
 
 app.use(cors());
 app.use(express.json());
@@ -21,5 +25,25 @@ mongoose.connect(CONNECTION_URL)
         console.log("error connection mongodb")
         console.log(error.message)
     });
+
+
+// cron jobs
+const task = cron.schedule('00 09 * * *', async function() {
+    try {
+        console.log("cron start")
+        let POOL = await sendEmail.find({ date: { $gte: new Date(moment().startOf('day')), $lte: new Date(moment().endOf('day'))}, isSent: false})
+        for (const data of POOL) {
+            SendEmailTask(data.email).then(async() => {
+                await sendEmail.findByIdAndUpdate(data._id, { isSent: true })
+                console.log('success send email to '+data.email)
+            });   
+        }   
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+
+task.start();
 
 mongoose.Promise = global.Promise;

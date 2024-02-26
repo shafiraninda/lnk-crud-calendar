@@ -1,12 +1,13 @@
 import Axios from "axios";
 import "./Calendar.css"
+import 'react-toastify/dist/ReactToastify.css'
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../config/api";
 import { update } from "../../features/userSlice";
 import { Button, Card, Container, Modal, Navbar, Form } from "react-bootstrap";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 const moment = require('moment')
 
 function Calendar(){
@@ -111,6 +112,7 @@ function Calendar(){
             navigate('/login')
         } catch (error) {
             if(error.response){
+                toast.error(error.response.data)
                 console.log(error.response.data)
             }
         }
@@ -172,41 +174,35 @@ function Calendar(){
     useEffect(() => {
         let newCalendar = arrayOfDate(currMonth, currYear)
         setCalendarOfTheMonth(newCalendar)
-        // async function fetchData(){
-            Axios.get(`${API_URL}/send-email/all?start_date=${moment([currYear, currMonth]).startOf('month')}&end_date=${moment([currYear, currMonth]).endOf('month')}`)
+        Axios.get(`${API_URL}/send-email/all?start_date=${moment([currYear, currMonth]).startOf('month')}&end_date=${moment([currYear, currMonth]).endOf('month')}`)
             .then((response) => {
                 let unfilteredAgenda = response.data.data
                 let agendas = []
                 let allDate = calendarOfTheMonth.flat()
                 for (const date of allDate) {
-                    console.log(date)
                     let theDate = moment(date)
                     let filterAgenda = unfilteredAgenda.filter(x => theDate.diff(moment(x.date).format('YYYY-MM-DD'), 'day') === 0)
-                    console.log(theDate.diff(moment('2024-02-27'), 'day'))
-                    console.log(filterAgenda)
                     agendas.push(filterAgenda)
                 }
                 setListAgenda(agendas)
             })
-        // }
-        // fetchData()
         console.log("list Agenda: ", listAgenda)
     }, [currMonth, currDay, currYear, show])
 
     return (
         <div>
-            <Navbar expand="lg" variant="light" bg="light" className="justify-content-center align-items-center">
-                <Container className="d-flex align-content-right">
-                    <Navbar.Brand className="text-start mx-2">
-                        <h1 className="text-bold">Agenda</h1>
+            <Navbar expand="lg" variant="light" bg="light" className="d-flex container-fluid justify-content-between flex-fill">
+                <div className="d-flex align-content-right mx-1 container-fluid mx-5">
+                    <Navbar.Brand className="">
+                        <h1 className="text-bold">LNK Agenda</h1>
                     </Navbar.Brand>
-                    <div className="d-flex align-content-center">
-                        <p className="p-2 fs-5">Hi, {username}</p>
-                        <button className="btn btn-danger" onClick={Logout}>Logout</button>
+                    <div className="d-flex align-items-center">
+                        <p className="p-2 fs-3 me-4 align-content-center my-1">Hi, {username}</p>
+                        <button className="btn btn-danger fs-4 p-3" onClick={Logout}>Logout</button>
                     </div>
-                </Container>
+                </div>
             </Navbar>
-            <div className="justify-content-center align-items-center px-5 py-3 mt-3" id="container">
+            <div className="justify-content-center align-items-center px-5 py-3" id="container">
                 <div className="d-flex align-content-right mx-1">
                     <h1 className="col text-start text-light mx-2">Big Calendar</h1>
                     <Button className="col-2 mx-2 fs-5 px-3" onClick={handleCreate}>Create</Button>
@@ -296,6 +292,7 @@ function Calendar(){
                     </Form>
 				</Modal.Body>
 			</Modal>
+            <ToastContainer />
         </div>
     )
 }

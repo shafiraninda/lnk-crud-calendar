@@ -8,6 +8,10 @@ const sendEmailSchema = mongoose.Schema({
         type: Date,
         default: new Date()
     },
+    isSent: {
+        type: Boolean,
+        default: false
+    },
     desc: String,
     created_at: {
         type: Date,
